@@ -144,6 +144,9 @@ def _get_pixel_size(
         if metadata_type == "PtychoShelves":
             with h5py.File(metadata_file_path, "r") as f:
                 pixel_size_m = float(f["dx"][0])
+        elif metadata_type == "NSLS_II_MATLAB":
+            with h5py.File(metadata_file_path, "r") as f:
+                pixel_size_m = float(f["ccd_pixel_um"][0]) * 1e-6
         else:
             raise ValueError(f"Unsupported metadata type: {metadata_type}")
     return pixel_size_m
@@ -156,6 +159,9 @@ def _get_diffraction_pattern_size(
     if diffraction_reader == "PtychoShelves":
         with h5py.File(diffraction_pattern_path, "r") as f:
             return f["dp"].shape[-2:]
+    elif diffraction_reader == "NSLS_II_MATLAB":
+        with h5py.File(diffraction_pattern_path, "r") as f:
+            return f["diffamp"].shape[-2:]
     else:
         raise ValueError(f"Unsupported diffraction reader: {diffraction_reader}")
 
